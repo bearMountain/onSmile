@@ -12,6 +12,14 @@
 		01B998F01C9951F20064D004 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01B998EE1C9951F20064D004 /* Main.storyboard */; };
 		01B998F21C9951F20064D004 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 01B998F11C9951F20064D004 /* Assets.xcassets */; };
 		01B998F51C9951F20064D004 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 01B998F31C9951F20064D004 /* LaunchScreen.storyboard */; };
+		01B998FD1C9952850064D004 /* CoreImage.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B998FC1C9952850064D004 /* CoreImage.framework */; };
+		01B998FF1C99528F0064D004 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B998FE1C99528F0064D004 /* ImageIO.framework */; };
+		01B999011C9953E30064D004 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B999001C9953E30064D004 /* AssetsLibrary.framework */; };
+		01B999031C9954430064D004 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B999021C9954430064D004 /* QuartzCore.framework */; };
+		01B999051C99544D0064D004 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B999041C99544D0064D004 /* CoreMedia.framework */; };
+		01B999071C99545C0064D004 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B999061C99545C0064D004 /* AVFoundation.framework */; };
+		01B999091C9954650064D004 /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B999081C9954650064D004 /* CoreVideo.framework */; };
+		01B9990B1C9954740064D004 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 01B9990A1C9954740064D004 /* CoreGraphics.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +30,14 @@
 		01B998F11C9951F20064D004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		01B998F41C9951F20064D004 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		01B998F61C9951F20064D004 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		01B998FC1C9952850064D004 /* CoreImage.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreImage.framework; path = System/Library/Frameworks/CoreImage.framework; sourceTree = SDKROOT; };
+		01B998FE1C99528F0064D004 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		01B999001C9953E30064D004 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
+		01B999021C9954430064D004 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		01B999041C99544D0064D004 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		01B999061C99545C0064D004 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		01B999081C9954650064D004 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
+		01B9990A1C9954740064D004 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,6 +45,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				01B9990B1C9954740064D004 /* CoreGraphics.framework in Frameworks */,
+				01B999091C9954650064D004 /* CoreVideo.framework in Frameworks */,
+				01B999071C99545C0064D004 /* AVFoundation.framework in Frameworks */,
+				01B999051C99544D0064D004 /* CoreMedia.framework in Frameworks */,
+				01B999031C9954430064D004 /* QuartzCore.framework in Frameworks */,
+				01B999011C9953E30064D004 /* AssetsLibrary.framework in Frameworks */,
+				01B998FF1C99528F0064D004 /* ImageIO.framework in Frameworks */,
+				01B998FD1C9952850064D004 /* CoreImage.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -39,6 +63,7 @@
 			isa = PBXGroup;
 			children = (
 				01B998E91C9951F20064D004 /* onSmile */,
+				01B9990C1C99547B0064D004 /* Frameworks */,
 				01B998E81C9951F20064D004 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -62,6 +87,21 @@
 				01B998F61C9951F20064D004 /* Info.plist */,
 			);
 			path = onSmile;
+			sourceTree = "<group>";
+		};
+		01B9990C1C99547B0064D004 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				01B9990A1C9954740064D004 /* CoreGraphics.framework */,
+				01B999081C9954650064D004 /* CoreVideo.framework */,
+				01B999061C99545C0064D004 /* AVFoundation.framework */,
+				01B999041C99544D0064D004 /* CoreMedia.framework */,
+				01B999021C9954430064D004 /* QuartzCore.framework */,
+				01B999001C9953E30064D004 /* AssetsLibrary.framework */,
+				01B998FE1C99528F0064D004 /* ImageIO.framework */,
+				01B998FC1C9952850064D004 /* CoreImage.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +136,7 @@
 				TargetAttributes = {
 					01B998E61C9951F20064D004 = {
 						CreatedOnToolsVersion = 7.2.1;
+						DevelopmentTeam = V33YY39YAX;
 					};
 				};
 			};
@@ -249,10 +290,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = onSmile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = BranchComputing.onSmile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.branchcomputing.onSmile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -260,10 +305,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				INFOPLIST_FILE = onSmile/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = BranchComputing.onSmile;
+				PRODUCT_BUNDLE_IDENTIFIER = com.branchcomputing.onSmile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -286,6 +335,7 @@
 				01B998FB1C9951F20064D004 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
