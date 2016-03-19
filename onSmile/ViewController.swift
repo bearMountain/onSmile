@@ -9,99 +9,152 @@ import ImageIO
 import AssetsLibrary
 import AVFoundation
 
-class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
+class CaptureController: NSObject, AVCaptureVideoDataOutputSampleBufferDelegate {
+    
+    //MARK: - Public
+    var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer()
+    
+    //MARK: - Init
+    override init() {
+        super.init()
         setupAVCapture()
-        view.addSubview(previewView)
+        setupFaceDetector()
     }
     
+    //MARK: - Internal
     var isUsingFrontFacingCamera = false
     var observationContext = UInt8()
     var videoDataOutput = AVCaptureVideoDataOutput()
     var videoDataOutputQueue: dispatch_queue_t = dispatch_queue_create(UnsafePointer(bitPattern: 0), DISPATCH_QUEUE_SERIAL)
     var stillImageOutput = AVCaptureStillImageOutput()
     var effectiveScale: CGFloat = 1.0
-    var previewLayer: AVCaptureVideoPreviewLayer = AVCaptureVideoPreviewLayer()
-    var previewView = UIView()
+    var faceDetector = CIDetector()
+    var ioSession = AVCaptureSession()
     
     func setupAVCapture() {
-        let session = AVCaptureSession()
-        session.sessionPreset = AVCaptureSessionPreset640x480
+        ioSession = AVCaptureSession()
+        ioSession.sessionPreset = AVCaptureSessionPreset640x480
         
-        // Select a video device, make an input
-        let device = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
-        do {
-            let deviceInput = try AVCaptureDeviceInput(device: device)
+        if let cameraInput = getCameraInput() {
             isUsingFrontFacingCamera = true
-            if (session.canAddInput(deviceInput)) {
-                session.addInput(deviceInput)
-            }
-            
-            // Make a still image output
-            stillImageOutput = AVCaptureStillImageOutput()
-            let options = NSKeyValueObservingOptions([.New])
-            stillImageOutput.addObserver(self, forKeyPath: "capturingStillImage", options: options, context: &observationContext)
-            if (session.canAddOutput(stillImageOutput)) {
-                session.addOutput(stillImageOutput)
-            }
-            
-            // Make a video data output
-            videoDataOutput = AVCaptureVideoDataOutput()
-            
-            // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
-            let rgbOutputSettings: [String: AnyObject] = [String(kCVPixelBufferPixelFormatTypeKey): NSNumber(unsignedInt: kCMPixelFormat_32BGRA)]
-            videoDataOutput.videoSettings = rgbOutputSettings
-            videoDataOutput.alwaysDiscardsLateVideoFrames = true // discard if the data output queue is blocked (as we process the still image)
-            
-            videoDataOutputQueue = dispatch_queue_create(UnsafePointer(bitPattern: 0), DISPATCH_QUEUE_SERIAL)
-            videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
-            
-            if (session.canAddOutput(videoDataOutput)) {
-                session.addOutput(videoDataOutput)
-            }
-            
-            videoDataOutput.connectionWithMediaType(AVMediaTypeVideo).enabled = false
             effectiveScale = 1.0
             
-            previewLayer = AVCaptureVideoPreviewLayer(session: session)
-            previewLayer.backgroundColor = UIColor.blueColor().CGColor
-            previewLayer.videoGravity = AVLayerVideoGravityResizeAspect
+            addInput(cameraInput)
+            addStillImageOutput()
+            addVideoDataOutput()
+            setupPreviewLayer()
             
-            previewView.frame = view.bounds
-            let rootLayer = previewView.layer
-            rootLayer.masksToBounds = true
-            previewLayer.frame = rootLayer.bounds
-            rootLayer.addSublayer(previewLayer)
-            session.startRunning()
+            ioSession.startRunning()
+        }
+    }
+    
+    func setupFaceDetector() {
+        let detectorOptions = [CIDetectorAccuracy: CIDetectorAccuracyLow]
+        faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: detectorOptions)
+    }
+    
+    func getCameraInput() -> AVCaptureInput? {
+        // Select a video device, make an input
+        let cameraDevice = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeVideo)
+        var cameraInput: AVCaptureInput?
+        do {
+            cameraInput = try AVCaptureDeviceInput(device: cameraDevice)
         } catch {
             teardownAVCapture()
         }
+        
+        return cameraInput
+    }
+    
+    func addInput(input: AVCaptureInput) {
+        if (ioSession.canAddInput(input)) {
+            ioSession.addInput(input)
+        }
+    }
+    
+    func addOutput(output: AVCaptureOutput) {
+        if (ioSession.canAddOutput(output)) {
+            ioSession.addOutput(output)
+        }
+    }
+    
+    func addStillImageOutput() {
+        stillImageOutput = AVCaptureStillImageOutput()
+        let options = NSKeyValueObservingOptions([.New])
+        stillImageOutput.addObserver(self, forKeyPath: "capturingStillImage", options: options, context: &observationContext)
+        addOutput(stillImageOutput)
+    }
+    
+    func addVideoDataOutput() {
+        // Make a video data output
+        videoDataOutput = AVCaptureVideoDataOutput()
+        
+        // we want BGRA, both CoreGraphics and OpenGL work well with 'BGRA'
+        let rgbOutputSettings: [String: AnyObject] = [String(kCVPixelBufferPixelFormatTypeKey): NSNumber(unsignedInt: kCMPixelFormat_32BGRA)]
+        videoDataOutput.videoSettings = rgbOutputSettings
+        videoDataOutput.alwaysDiscardsLateVideoFrames = true // discard if the data output queue is blocked (as we process the still image)
+        
+        videoDataOutputQueue = dispatch_queue_create(UnsafePointer(bitPattern: 0), DISPATCH_QUEUE_SERIAL)
+        videoDataOutput.setSampleBufferDelegate(self, queue: videoDataOutputQueue)
+        addOutput(videoDataOutput)
+        
+        videoDataOutput.connectionWithMediaType(AVMediaTypeVideo).enabled = false
+    }
+
+    func setupPreviewLayer() {
+        previewLayer = AVCaptureVideoPreviewLayer(session: ioSession)
+        previewLayer.backgroundColor = UIColor.blueColor().CGColor
+        previewLayer.videoGravity = AVLayerVideoGravityResizeAspectFill
     }
     
     func teardownAVCapture() {
         stillImageOutput.removeObserver(self, forKeyPath: "isCapturingStillImage")
         previewLayer.removeFromSuperlayer()
     }
+
+    func ReleaseCVPixelBuffer(pixelBuffer: CVPixelBufferRef) {
+        CVPixelBufferUnlockBaseAddress(pixelBuffer, 0)
+    }
+}
+
+
+let FlipCameraButtonWidth: CGFloat = 100.0
+let FlipCameraButtonSideInset: CGFloat = 40.0
+let FlipCameraButtonTopInset: CGFloat = 60.0
+
+class ViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+    
+    let captureController = CaptureController()
+    let flipCameraButton = UIButton(type: .Custom)
+
+    //MARK: - ViewLifecycle
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.layer.addSublayer(captureController.previewLayer)
+        
+        setupFlipCameraButton()
+    }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        previewView.frame = view.bounds
+        
+        captureController.previewLayer.frame = view.bounds
+        
+        flipCameraButton.frame = CGRect(
+            x: view.frame.size.width - FlipCameraButtonWidth - FlipCameraButtonSideInset,
+            y: FlipCameraButtonTopInset,
+            width: FlipCameraButtonWidth,
+            height: FlipCameraButtonWidth
+        )
     }
-
+    
+    //MARK: - Internal
+    func setupFlipCameraButton() {
+        view.addSubview(flipCameraButton)
+        
+        flipCameraButton.setTitle("test", forState: .Normal)
+    }
 }
 
-func ReleaseCVPixelBuffer(pixelBuffer: CVPixelBufferRef) {
-    CVPixelBufferUnlockBaseAddress(pixelBuffer, 0)
-}
-
-//static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size);
-//static void ReleaseCVPixelBuffer(void *pixel, const void *data, size_t size)
-//{
-//    CVPixelBufferRef pixelBuffer = (CVPixelBufferRef)pixel;
-//    CVPixelBufferUnlockBaseAddress( pixelBuffer, 0 );
-//    CVPixelBufferRelease( pixelBuffer );
-//}
 
